@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
-    {name = "Your Name", email = "your.email@example.com"},
+    {name = "Tiago Tresoldi", email = "tiago.tresoldi@lingfil.uu.se"},
 ]
 keywords = ["literate-programming", "scientific-computing", "reports", "documentation"]
 classifiers = [
@@ -39,6 +39,8 @@ dev = [
     "ruff>=0.1.0",
     "types-PyYAML",
     "types-Pygments",
+    "build>=1.0",
+    "twine>=4.0",
 ]
 test = [
     "numpy>=1.20",
@@ -51,8 +53,8 @@ all = ["nhandu[dev,test]"]
 nhandu = "nhandu.__main__:main"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/nhandu"
-Issues = "https://github.com/yourusername/nhandu/issues"
+Homepage = "https://github.com/tresoldi/nhandu"
+Issues = "https://github.com/tresoldi/nhandu/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
