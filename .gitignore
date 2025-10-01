@@ -184,6 +184,7 @@ examples/figures/
 tests/fixtures/figures/
 *.out
 *.html
+!examples/*.html
 *.pdf
 
 # Temporary files

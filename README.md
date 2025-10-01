@@ -162,11 +162,11 @@ The output will appear in your rendered document. In case of HTML output, any fi
 
 Check out the [`examples/`](https://github.com/tresoldi/nhandu/tree/main/examples/) directory for complete demonstrations:
 
-- **[01_hello_world.py](https://github.com/tresoldi/nhandu/tree/main/examples/01_hello_world.py)** - Basic syntax and concepts
-- **[02_data_analysis.py](https://github.com/tresoldi/nhandu/tree/main/examples/02_data_analysis.py)** - Working with data using standard library
-- **[03_plotting.py](https://github.com/tresoldi/nhandu/tree/main/examples/03_plotting.py)** - Creating visualizations with matplotlib
-- **[04_scientific_computation.py](https://github.com/tresoldi/nhandu/tree/main/examples/04_scientific_computation.py)** - Numerical computing with NumPy
-- **[05_advanced_report.py](https://github.com/tresoldi/nhandu/tree/main/examples/05_advanced_report.py)** - Complex report with pandas and multiple visualizations
+- **[01_hello_world.py](https://github.com/tresoldi/nhandu/tree/main/examples/01_hello_world.py)** - Basic syntax and concepts [[OUTPUT](https://htmlpreview.github.io/?https://github.com/tresoldi/nhandu/blob/main/examples/01_hello_world.py.html)]
+- **[02_data_analysis.py](https://github.com/tresoldi/nhandu/tree/main/examples/02_data_analysis.py)** - Working with data using standard library [[OUTPUT](https://htmlpreview.github.io/?https://github.com/tresoldi/nhandu/blob/main/examples/02_data_analysis.py.html)]
+- **[03_plotting.py](https://github.com/tresoldi/nhandu/tree/main/examples/03_plotting.py)** - Creating visualizations with matplotlib [[OUTPUT](https://htmlpreview.github.io/?https://github.com/tresoldi/nhandu/blob/main/examples/03_plotting.py.html)]
+- **[04_scientific_computation.py](https://github.com/tresoldi/nhandu/tree/main/examples/04_scientific_computation.py)** - Numerical computing with NumPy [[OUTPUT](https://htmlpreview.github.io/?https://github.com/tresoldi/nhandu/blob/main/examples/04_scientific_computation.py.html)]
+- **[05_advanced_report.py](https://github.com/tresoldi/nhandu/tree/main/examples/05_advanced_report.py)** - Complex report with pandas and multiple visualizations [[OUTPUT](https://htmlpreview.github.io/?https://github.com/tresoldi/nhandu/blob/main/examples/05_advanced_report.py.html)]
 
 ## Installation & Usage
 
