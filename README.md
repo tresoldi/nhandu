@@ -1,6 +1,7 @@
+
 # Nhandu 
 
-> *Nhandu* (ɲãndu, approximately "NYAN-doo") means "spider" in many Tupi-Guarani languages, a fitting name for a tool that weaves together code and documentation, much like Knuth's original vision of literate programming.
+> *Nhandu* (/ɲãndu/, approximately "NYAN-doo") means "spider" in many Tupi-Guarani languages, a fitting name for a tool that weaves together code and documentation, much like Knuth's original vision of literate programming.
 
 **Literate programming for Python: Write executable documents in plain `.py` files.**
 
@@ -12,12 +13,13 @@ Contemporary literate programming in Python faces a documentation dilemma:
 
 - **Jupyter notebooks** are powerful but use JSON format (git diffs are messy), require a browser/server, and mix code with metadata
 - **Quarto** is feature-rich but complex, with many configuration options and a learning curve
+- **Pweave** has not been maintained for many years and is incompatible with currently supported Python versions.
 - **Traditional scripts** lack integrated documentation and visualization
 
-**Nhandu offers a better way:**
+Nhandu offers a different solution:
 
 - Write literate programs in **normal `.py` files**: no special format, just comments
-- **Perfect git diffs**: plain text, not JSON
+- **Perfect git diffs**: plain text, not JSON, no timestamps, no hashes
 - **No server or browser** required—just run the command
 - **Zero configuration needed**: smart defaults get you started immediately
 - **Python-native**: designed specifically for the Python ecosystem
@@ -72,11 +74,11 @@ Nhandu automatically captures:
 
 ### Syntax Highlighting
 
-Beautiful server-side syntax highlighting with 50+ themes via Pygments. Popular themes: `github-dark` (default), `monokai`, `dracula`, `one-dark`, `vs`, `solarized-light`
+Server-side syntax highlighting with 50+ themes via Pygments. Popular themes include: `github-dark` (default), `monokai`, `dracula`, `one-dark`, `vs`, and `solarized-light`.
 
 ### Multiple Output Formats
 
-**Note**: Markdown output can be converted to PDF, Word, LaTeX, and more using [pandoc](https://pandoc.org/) or similar tools. Native PDF support is planned.
+Markdown output can be converted to PDF, Word, LaTeX, and more using [pandoc](https://pandoc.org/) or similar tools. Native HTML support is implemented out-of-the-box.
 
 ### Configuration (Optional)
 
@@ -156,62 +158,15 @@ The output will appear in your rendered document. In case of HTML output, any fi
 - **Output capture**: stdout, plots, and expression results are all captured
 - **Rich formatting**: Automatic handling of matplotlib figures, pandas DataFrames, and more
 
-## Comparison with Other Tools
-
-| Feature | Nhandu | Jupyter | Quarto | R Markdown | Pweave |
-|---------|--------|---------|--------|------------|--------|
-| **Format** | Plain `.py` or `.md` | JSON | Multiple | `.Rmd` | `.pmd` |
-| **Git-friendly** | ✅ Perfect | ⚠️ Messy diffs | ✅ Good | ✅ Good | ✅ Good |
-| **Complexity** | 🟢 Simple | 🟡 Medium | 🔴 Complex | 🟡 Medium | 🟢 Simple |
-| **Python-native** | ✅ Yes | ✅ Yes | ⚠️ Multi-language | ❌ R-focused | ✅ Yes |
-| **Requires server** | ❌ No | ✅ Yes | ❌ No | ❌ No | ❌ No |
-| **Zero config** | ✅ Yes | ✅ Yes | ❌ No | ⚠️ Some | ⚠️ Some |
-| **Active maintenance** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ❌ Unmaintained |
-
 ## Examples
 
-Here's a complete example showing data analysis with visualization:
+Check out the [`examples/`](https://github.com/tresoldi/nhandu/tree/main/examples/) directory for complete demonstrations:
 
-```python
-#' # Sales Analysis Report
-#'
-#' This report analyzes Q1 sales data and identifies trends.
-
-#| hide
-import pandas as pd
-import matplotlib.pyplot as plt
-#|
-
-#' ## Data Loading
-#'
-#' First, let's load our sales data:
-
-data = pd.read_csv("sales.csv")
-print(f"Loaded {len(data)} sales records")
-
-#' ## Summary Statistics
-
-print(data.describe())
-
-#' ## Visualization
-
-plt.figure(figsize=(10, 6))
-data.groupby('month')['revenue'].sum().plot(kind='bar')
-plt.title('Revenue by Month')
-plt.ylabel('Revenue ($)')
-
-#' The chart shows steady growth throughout Q1.
-```
-
-### More Examples
-
-Check out the [`examples/`](examples/) directory for complete demonstrations:
-
-- **[01_hello_world.py](examples/01_hello_world.py)** - Basic syntax and concepts
-- **[02_data_analysis.py](examples/02_data_analysis.py)** - Working with data using standard library
-- **[03_plotting.py](examples/03_plotting.py)** - Creating visualizations with matplotlib
-- **[04_scientific_computation.py](examples/04_scientific_computation.py)** - Numerical computing with NumPy
-- **[05_advanced_report.py](examples/05_advanced_report.py)** - Complex report with pandas and multiple visualizations
+- **[01_hello_world.py](https://github.com/tresoldi/nhandu/tree/main/examples/01_hello_world.py)** - Basic syntax and concepts
+- **[02_data_analysis.py](https://github.com/tresoldi/nhandu/tree/main/examples/02_data_analysis.py)** - Working with data using standard library
+- **[03_plotting.py](https://github.com/tresoldi/nhandu/tree/main/examples/03_plotting.py)** - Creating visualizations with matplotlib
+- **[04_scientific_computation.py](https://github.com/tresoldi/nhandu/tree/main/examples/04_scientific_computation.py)** - Numerical computing with NumPy
+- **[05_advanced_report.py](https://github.com/tresoldi/nhandu/tree/main/examples/05_advanced_report.py)** - Complex report with pandas and multiple visualizations
 
 ## Installation & Usage
 
@@ -232,12 +187,12 @@ pip install -e .
 ### Basic Usage
 
 ```bash
-nhandu document.py              # Process literate Python file → document.html
-nhandu document.md              # Process markdown file → document.html
-nhandu document.py -o report.html  # Specify output file
-nhandu document.py --format md     # Output as markdown
+nhandu document.py                       # Process literate Python file → document.html
+nhandu document.md                       # Process markdown file → document.html
+nhandu document.py -o report.html        # Specify output file
+nhandu document.py --format md           # Output as markdown
 nhandu document.py --code-theme monokai  # Custom syntax theme
-nhandu document.py --verbose       # Show processing details
+nhandu document.py --verbose             # Show processing details
 ```
 
 ### CLI Options
@@ -257,10 +212,6 @@ Options:
   --help                      Show help message
 ```
 
-## Contributing
-
-Contributions are welcome! This project is in early development and there's lots to do.
-
 ### Roadmap
 
 Current priorities:
@@ -276,7 +227,7 @@ See [issues](https://github.com/tresoldi/nhandu/issues) for more details and to 
 
 ## Project Information
 
-### Citation
+### Citation and Acknowledgements
 
 If you use Nhandu in your research, please cite:
 
@@ -292,6 +243,11 @@ If you use Nhandu in your research, please cite:
 }
 ```
 
+The earliest stages of development took place within the context of
+the [Cultural Evolution of Texts](https://github.com/evotext/) project, with funding from the
+[Riksbankens Jubileumsfond](https://www.rj.se/) (grant agreement ID:
+[MXM19-1087:1](https://www.rj.se/en/anslag/2019/cultural-evolution-of-texts/)).
+
 ### License
 
 MIT License - see [LICENSE](LICENSE) file for details.
@@ -306,9 +262,3 @@ Nhandu is inspired by:
 - [Pweave](http://mpastell.com/pweave/)'s Python implementation (though no longer maintained)
 
 Special thanks to the scientific Python community for building the ecosystem that makes tools like this possible.
-
----
-
-**Status**: Early Development | **Python**: 3.10+ | **License**: MIT
-
-[Documentation](https://github.com/tresoldi/nhandu) • [Examples](examples/) • [Issues](https://github.com/tresoldi/nhandu/issues) 
