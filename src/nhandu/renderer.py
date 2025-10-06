@@ -138,11 +138,14 @@ class HTMLRenderer(Renderer):
             if isinstance(block, MarkdownBlock):
                 # Defensive filter: skip empty markdown blocks
                 if block.content.strip():
-                    # Basic markdown to HTML conversion
+                    # Markdown to HTML conversion with GFM support
                     import mistune
 
-                    html_renderer = mistune.HTMLRenderer()
-                    markdown_parser = mistune.Markdown(renderer=html_renderer)
+                    # Use create_markdown with plugins for GitHub Flavored Markdown
+                    # Includes: tables, strikethrough, and footnotes
+                    markdown_parser = mistune.create_markdown(
+                        plugins=["table", "strikethrough", "footnotes"]
+                    )
                     html_output = markdown_parser(block.content)
                     if isinstance(html_output, str):
                         parts.append(html_output)
