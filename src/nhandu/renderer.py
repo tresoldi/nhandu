@@ -156,6 +156,10 @@ class HTMLRenderer(Renderer):
                 ):
                     parts.append(self._render_code_block_html(block))
 
+        # Add footer if enabled
+        if doc.metadata.show_footer:
+            parts.append(self._render_footer())
+
         parts.extend(["</body>", "</html>"])
         return "\n".join(parts)
 
@@ -262,6 +266,23 @@ class HTMLRenderer(Renderer):
             height: auto;
         }}
 
+        /* Footer */
+        .nhandu-footer {{
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e1e4e8;
+            font-size: 0.875rem;
+            color: #6c757d;
+        }}
+        .nhandu-footer a {{
+            color: #0969da;
+            text-decoration: none;
+        }}
+        .nhandu-footer a:hover {{
+            text-decoration: underline;
+        }}
+
         /* Pygments syntax highlighting */
         {pygments_css}
         """
@@ -346,6 +367,19 @@ class HTMLRenderer(Renderer):
             .replace(">", "&gt;")
             .replace('"', "&quot;")
             .replace("'", "&#39;")
+        )
+
+    def _render_footer(self) -> str:
+        """
+        Render the Nhandu attribution footer.
+
+        @return: HTML footer element with link to Nhandu
+        """
+        return (
+            '<footer class="nhandu-footer">\n'
+            'Made with <a href="https://pypi.org/project/nhandu" '
+            'target="_blank" rel="noopener noreferrer">Nhandu</a>\n'
+            "</footer>"
         )
 
 

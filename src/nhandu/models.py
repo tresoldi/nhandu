@@ -78,6 +78,7 @@ class DocumentMetadata:
     number_format: str = ".4f"
     working_dir: str | None = None
     code_theme: str | None = None
+    show_footer: bool = True
     raw: dict[str, Any] = field(default_factory=dict)
 
     @classmethod
@@ -90,6 +91,7 @@ class DocumentMetadata:
             number_format=data.get("number_format", ".4f"),
             working_dir=data.get("working_dir"),
             code_theme=data.get("code_theme"),
+            show_footer=data.get("show_footer", True),
             raw=data,
         )
 

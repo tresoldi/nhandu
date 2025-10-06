@@ -81,6 +81,12 @@ def create_argument_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
+        "--no-footer",
+        action="store_true",
+        help="Disable 'Made with Nhandu' footer in HTML output",
+    )
+
+    parser.add_argument(
         "--no-cache",
         action="store_true",
         help="Disable caching (not implemented yet)",
@@ -133,6 +139,8 @@ def process_document(args: argparse.Namespace) -> None:
         doc.metadata.output = args.format.replace("md", "markdown")
     if args.code_theme:
         doc.metadata.code_theme = args.code_theme
+    if args.no_footer:
+        doc.metadata.show_footer = False
 
     # Execute code blocks
     if args.verbose:
