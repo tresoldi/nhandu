@@ -8,7 +8,7 @@ version = "0.1.2"
 description = "A literate programming tool for Python that weaves code and documentation into scientific reports"
 readme = "README.md"
 requires-python = ">=3.10"
-license = {text = "MIT"}
+license = "MIT"
 authors = [
     {name = "Tiago Tresoldi", email = "tiago.tresoldi@lingfil.uu.se"},
 ]
@@ -16,7 +16,6 @@ keywords = ["literate-programming", "scientific-computing", "reports", "document
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
