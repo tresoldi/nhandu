@@ -92,6 +92,11 @@ class NhanduParser:
                 if "hide=true" in attributes or "hidden" in attributes:
                     hidden = True
 
+            # Filter empty code blocks (whitespace only or only comments/blank lines)
+            if self._is_empty_code(code_content, language):
+                last_end = code_match.end()
+                continue
+
             blocks.append(
                 CodeBlock(
                     content=code_content,
@@ -115,6 +120,27 @@ class NhanduParser:
                 )
 
         return blocks
+
+    def _is_empty_code(self, code: str, language: str) -> bool:
+        """
+        Check if code block is empty (only whitespace, comments, or blank lines).
+
+        For Python code, checks for comments and blank lines.
+        For other languages, uses simple whitespace check.
+
+        @param code: The code content to check
+        @param language: The programming language
+        @return: True if code is effectively empty
+        """
+        if language.lower() == "python":
+            # Check if all lines are blank or comments
+            lines = code.split("\n")
+            return all(
+                line.strip() == "" or line.strip().startswith("#") for line in lines
+            )
+        else:
+            # For other languages, simple whitespace check
+            return not code.strip()
 
     def extract_inline_code(self, text: str) -> list[InlineCode]:
         """Extract inline code from markdown text."""

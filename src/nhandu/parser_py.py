@@ -98,23 +98,27 @@ class PythonLiterateParser:
             if self.hide_marker_pattern.match(line):
                 # Flush any accumulated markdown or code before starting hide block
                 if current_markdown_lines:
-                    blocks.append(
-                        MarkdownBlock(
-                            "\n".join(current_markdown_lines),
-                            line_num - len(current_markdown_lines),
+                    markdown_content = "\n".join(current_markdown_lines)
+                    if markdown_content.strip():
+                        blocks.append(
+                            MarkdownBlock(
+                                markdown_content,
+                                line_num - len(current_markdown_lines),
+                            )
                         )
-                    )
                     current_markdown_lines = []
 
                 if current_code_lines:
-                    blocks.append(
-                        CodeBlock(
-                            content="\n".join(current_code_lines),
-                            language="python",
-                            hidden=False,
-                            line_number=current_code_start_line,
+                    code_content = "\n".join(current_code_lines)
+                    if not self._is_empty_code(code_content):
+                        blocks.append(
+                            CodeBlock(
+                                content=code_content,
+                                language="python",
+                                hidden=False,
+                                line_number=current_code_start_line,
+                            )
                         )
-                    )
                     current_code_lines = []
 
                 in_hide_block = True
@@ -122,16 +126,18 @@ class PythonLiterateParser:
                 continue
 
             if self.end_hide_marker_pattern.match(line) and in_hide_block:
-                # End hide block - save hidden code
+                # End hide block - save hidden code (filter empty hidden blocks)
                 if current_code_lines:
-                    blocks.append(
-                        CodeBlock(
-                            content="\n".join(current_code_lines),
-                            language="python",
-                            hidden=True,
-                            line_number=hide_block_start_line,
+                    code_content = "\n".join(current_code_lines)
+                    if not self._is_empty_code(code_content):
+                        blocks.append(
+                            CodeBlock(
+                                content=code_content,
+                                language="python",
+                                hidden=True,
+                                line_number=hide_block_start_line,
+                            )
                         )
-                    )
                     current_code_lines = []
 
                 in_hide_block = False
@@ -144,14 +150,16 @@ class PythonLiterateParser:
                 # This is a markdown line
                 # First, flush any accumulated code
                 if current_code_lines:
-                    blocks.append(
-                        CodeBlock(
-                            content="\n".join(current_code_lines),
-                            language="python",
-                            hidden=in_hide_block,
-                            line_number=current_code_start_line,
+                    code_content = "\n".join(current_code_lines)
+                    if not self._is_empty_code(code_content):
+                        blocks.append(
+                            CodeBlock(
+                                content=code_content,
+                                language="python",
+                                hidden=in_hide_block,
+                                line_number=current_code_start_line,
+                            )
                         )
-                    )
                     current_code_lines = []
 
                 # Add to markdown accumulator
@@ -160,12 +168,14 @@ class PythonLiterateParser:
                 # This is a code line (or blank/comment)
                 # First, flush any accumulated markdown
                 if current_markdown_lines:
-                    blocks.append(
-                        MarkdownBlock(
-                            "\n".join(current_markdown_lines),
-                            line_num - len(current_markdown_lines),
+                    markdown_content = "\n".join(current_markdown_lines)
+                    if markdown_content.strip():
+                        blocks.append(
+                            MarkdownBlock(
+                                markdown_content,
+                                line_num - len(current_markdown_lines),
+                            )
                         )
-                    )
                     current_markdown_lines = []
 
                 # Add to code accumulator (including blank lines and regular comments)
@@ -175,24 +185,38 @@ class PythonLiterateParser:
 
         # Flush any remaining content
         if current_markdown_lines:
-            blocks.append(
-                MarkdownBlock(
-                    "\n".join(current_markdown_lines),
-                    len(lines) - len(current_markdown_lines) + 1,
+            markdown_content = "\n".join(current_markdown_lines)
+            if markdown_content.strip():
+                blocks.append(
+                    MarkdownBlock(
+                        markdown_content,
+                        len(lines) - len(current_markdown_lines) + 1,
+                    )
                 )
-            )
 
         if current_code_lines:
-            blocks.append(
-                CodeBlock(
-                    content="\n".join(current_code_lines),
-                    language="python",
-                    hidden=in_hide_block,
-                    line_number=current_code_start_line,
+            code_content = "\n".join(current_code_lines)
+            if not self._is_empty_code(code_content):
+                blocks.append(
+                    CodeBlock(
+                        content=code_content,
+                        language="python",
+                        hidden=in_hide_block,
+                        line_number=current_code_start_line,
+                    )
                 )
-            )
 
         return blocks
+
+    def _is_empty_code(self, code: str) -> bool:
+        """
+        Check if Python code is empty (only whitespace, comments, or blank lines).
+
+        @param code: The Python code content to check
+        @return: True if code is effectively empty
+        """
+        lines = code.split("\n")
+        return all(line.strip() == "" or line.strip().startswith("#") for line in lines)
 
     def extract_inline_code(self, text: str) -> list[InlineCode]:
         """Extract inline code from markdown text."""

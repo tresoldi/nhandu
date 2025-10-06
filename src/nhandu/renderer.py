@@ -47,9 +47,18 @@ class MarkdownRenderer(Renderer):
         # Render blocks
         for block in doc.blocks:
             if isinstance(block, MarkdownBlock):
-                output_parts.append(block.content)
+                # Defensive filter: skip empty markdown blocks
+                if block.content.strip():
+                    output_parts.append(block.content)
             elif isinstance(block, CodeBlock):
-                output_parts.append(self._render_code_block(block))
+                # Defensive filter: render if has content OR output/error/figures
+                if (
+                    block.content.strip()
+                    or block.output
+                    or block.error
+                    or block.figures
+                ):
+                    output_parts.append(self._render_code_block(block))
 
         return "\n".join(output_parts)
 
@@ -127,16 +136,25 @@ class HTMLRenderer(Renderer):
         # Render blocks
         for block in doc.blocks:
             if isinstance(block, MarkdownBlock):
-                # Basic markdown to HTML conversion
-                import mistune
+                # Defensive filter: skip empty markdown blocks
+                if block.content.strip():
+                    # Basic markdown to HTML conversion
+                    import mistune
 
-                html_renderer = mistune.HTMLRenderer()
-                markdown_parser = mistune.Markdown(renderer=html_renderer)
-                html_output = markdown_parser(block.content)
-                if isinstance(html_output, str):
-                    parts.append(html_output)
+                    html_renderer = mistune.HTMLRenderer()
+                    markdown_parser = mistune.Markdown(renderer=html_renderer)
+                    html_output = markdown_parser(block.content)
+                    if isinstance(html_output, str):
+                        parts.append(html_output)
             elif isinstance(block, CodeBlock) and not block.hidden:
-                parts.append(self._render_code_block_html(block))
+                # Defensive filter: render if has content OR output/error/figures
+                if (
+                    block.content.strip()
+                    or block.output
+                    or block.error
+                    or block.figures
+                ):
+                    parts.append(self._render_code_block_html(block))
 
         parts.extend(["</body>", "</html>"])
         return "\n".join(parts)
