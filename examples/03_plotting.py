@@ -1,3 +1,7 @@
+#' ---
+#' title: Data Visualization with Nhandu
+#' ---
+#'
 #' # Data Visualization with Nhandu
 #'
 #' This example demonstrates how Nhandu captures and displays matplotlib plots alongside code and analysis.

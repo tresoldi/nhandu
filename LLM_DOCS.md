@@ -89,6 +89,42 @@ print(data.head())
 - ✅ Data loading boilerplate
 - ❌ Don't hide the actual analysis (defeats the purpose of literate programming)
 
+### Inline Code Evaluation
+
+Execute Python code directly within markdown text using inline code syntax:
+
+- **`<%= expression %>`** - Evaluates expression and displays result
+- **`<% statement %>`** - Executes code without output
+
+```python
+#' # Sales Analysis
+#'
+#' <% import datetime %>
+#' Report generated: <%= datetime.date.today() %>
+
+sales_data = [100, 150, 200, 175, 225]
+
+#' Total sales: <%= sum(sales_data) %>
+#' Average: <%= sum(sales_data) / len(sales_data) %>
+#'
+#' <% status = "exceeds" if sum(sales_data) > 800 else "below" %>
+#' Performance: <%= status %> target
+```
+
+**Key Points:**
+- Inline code shares the same namespace as code blocks
+- Expressions are evaluated and replaced with their string representation
+- Statements execute but produce no visible output
+- Works in both `.py` literate files and `.md` markdown files
+- Can reference variables from code blocks or hidden blocks
+
+**When to Use Inline Code:**
+- ✅ Embedding calculated values in narrative text
+- ✅ Dynamic dates, timestamps, or metadata
+- ✅ Displaying variable values inline with prose
+- ✅ Simple conditional text based on computation results
+- ❌ Complex logic (use regular code blocks instead)
+
 ## Execution Model
 
 ### How Code Executes
@@ -420,6 +456,8 @@ When generating literate Python files, ensure:
 | Heading | `#' # Title` | `#' ## Section 2.1` |
 | Code block | Regular Python | `x = 42` |
 | Hidden code | `#\| hide` ... `#\|` | See examples above |
+| Inline expression | `<%= expr %>` | `#' Result: <%= x + 5 %>` |
+| Inline statement | `<% code %>` | `#' <% import datetime %>` |
 | Code comment | `#` | `# This is a code comment` |
 | List | `#' - item` | `#' 1. First item` |
 | Math | `#' $equation$` | `#' $E = mc^2$` |

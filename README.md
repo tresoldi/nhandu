@@ -158,6 +158,33 @@ The output will appear in your rendered document. In case of HTML output, any fi
 - **Output capture**: stdout, plots, and expression results are all captured
 - **Rich formatting**: Automatic handling of matplotlib figures, pandas DataFrames, and more
 
+### Inline Code Evaluation
+
+You can embed Python expressions directly within markdown text using inline code syntax:
+
+- **`<%= expression %>`** - Evaluates the expression and displays the result
+- **`<% statement %>`** - Executes code without displaying output
+
+This works in both `.py` literate files and traditional `.md` files:
+
+```python
+#' # Sales Report
+#'
+#' <% import datetime %>
+#' Report generated on <%= datetime.date.today() %>.
+
+total_sales = 45000
+target = 50000
+
+#' We achieved <%= total_sales %> in sales.
+#' That's <%= (total_sales/target)*100 %>% of our target.
+#'
+#' <% status = "on track" if total_sales >= target * 0.9 else "behind" %>
+#' Status: We are <%= status %>.
+```
+
+Inline code shares the same namespace as regular code blocks, so you can reference variables, import modules, and perform calculations seamlessly within your documentation.
+
 ## Examples
 
 Check out the [`examples/`](https://github.com/tresoldi/nhandu/tree/main/examples/) directory for complete demonstrations:
@@ -167,6 +194,7 @@ Check out the [`examples/`](https://github.com/tresoldi/nhandu/tree/main/example
 - **[03_plotting.py](https://github.com/tresoldi/nhandu/tree/main/examples/03_plotting.py)** - Creating visualizations with matplotlib [[OUTPUT](https://htmlpreview.github.io/?https://github.com/tresoldi/nhandu/blob/main/examples/03_plotting.py.html)]
 - **[04_scientific_computation.py](https://github.com/tresoldi/nhandu/tree/main/examples/04_scientific_computation.py)** - Numerical computing with NumPy [[OUTPUT](https://htmlpreview.github.io/?https://github.com/tresoldi/nhandu/blob/main/examples/04_scientific_computation.py.html)]
 - **[05_advanced_report.py](https://github.com/tresoldi/nhandu/tree/main/examples/05_advanced_report.py)** - Complex report with pandas and multiple visualizations [[OUTPUT](https://htmlpreview.github.io/?https://github.com/tresoldi/nhandu/blob/main/examples/05_advanced_report.py.html)]
+- **[06_inline_code.py](https://github.com/tresoldi/nhandu/tree/main/examples/06_inline_code.py)** - Inline code evaluation with `<%= %>` syntax [[OUTPUT](https://htmlpreview.github.io/?https://github.com/tresoldi/nhandu/blob/main/examples/06_inline_code.py.html)]
 
 ## Installation & Usage
 
@@ -217,7 +245,6 @@ Options:
 Current priorities:
 
 - [ ] Native PDF output support
-- [ ] Inline code evaluation (`<%= expression %>` syntax)
 - [ ] Custom HTML templates (Jinja2)
 - [ ] Watch mode for live development
 - [ ] Rich display for more object types (NumPy arrays, scikit-learn models)

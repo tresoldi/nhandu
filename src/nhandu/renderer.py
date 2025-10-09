@@ -118,6 +118,9 @@ class HTMLRenderer(Renderer):
         theme = self._resolve_theme(doc.metadata.code_theme)
         self._setup_formatter(theme)
 
+        # Determine page title: metadata > filename > default
+        title = self._get_document_title(doc)
+
         # Basic HTML rendering for now
         # Will be enhanced with templates later
         parts = [
@@ -125,7 +128,7 @@ class HTMLRenderer(Renderer):
             "<html>",
             "<head>",
             "<meta charset='utf-8'>",
-            f"<title>{doc.metadata.title or 'Nhandu Report'}</title>",
+            f"<title>{title}</title>",
             "<style>",
             self._get_default_css(),
             "</style>",
@@ -165,6 +168,30 @@ class HTMLRenderer(Renderer):
 
         parts.extend(["</body>", "</html>"])
         return "\n".join(parts)
+
+    def _get_document_title(self, doc: ExecutedDocument) -> str:
+        """
+        Get document title with fallback logic.
+
+        Priority:
+        1. YAML frontmatter title
+        2. Source filename (without extension)
+        3. Default "Nhandu Report"
+
+        @param doc: The executed document
+        @return: Document title string
+        """
+        # Use metadata title if available
+        if doc.metadata.title:
+            return doc.metadata.title
+
+        # Fall back to filename if source path exists
+        if doc.source_path:
+            # Get filename without extension
+            return doc.source_path.stem
+
+        # Final fallback
+        return "Nhandu Report"
 
     def _resolve_theme(self, requested_theme: str | None) -> str:
         """Resolve theme name with validation."""

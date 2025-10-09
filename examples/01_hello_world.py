@@ -1,3 +1,7 @@
+#' ---
+#' title: Hello World with Nhandu
+#' ---
+#'
 #' # Hello World with Nhandu
 #'
 #' This is the simplest possible example of a Nhandu document. It demonstrates basic Python code execution and output capture.

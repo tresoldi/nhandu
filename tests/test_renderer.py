@@ -413,3 +413,80 @@ def test_render_fixture_files():
 
             finally:
                 os.chdir(original_cwd)
+
+def test_html_title_from_metadata():
+    """Test that HTML title uses YAML frontmatter title."""
+    content = """---
+title: My Custom Title
+---
+
+# Document
+
+Some content."""
+
+    doc = parse(content)
+    executed_doc = execute(doc)
+    output = render(executed_doc, "html")
+
+    assert "<title>My Custom Title</title>" in output
+
+
+def test_html_title_from_filename():
+    """Test that HTML title falls back to filename when no metadata title."""
+    content = """# Document
+
+Some content."""
+
+    doc = parse(content, "my_report.md")
+    executed_doc = execute(doc)
+    output = render(executed_doc, "html")
+
+    assert "<title>my_report</title>" in output
+
+
+def test_html_title_from_filename_python():
+    """Test filename fallback for Python literate files."""
+    from nhandu.parser_py import parse_python
+
+    content = """#' # Analysis
+#'
+#' Some content.
+
+x = 42
+"""
+
+    doc = parse_python(content, "data_analysis.py")
+    executed_doc = execute(doc)
+    output = render(executed_doc, "html")
+
+    assert "<title>data_analysis</title>" in output
+
+
+def test_html_title_default_fallback():
+    """Test default title when no metadata and no source path."""
+    content = """# Document
+
+Some content."""
+
+    doc = parse(content)  # No source path
+    executed_doc = execute(doc)
+    output = render(executed_doc, "html")
+
+    assert "<title>Nhandu Report</title>" in output
+
+
+def test_html_title_priority():
+    """Test that metadata title takes priority over filename."""
+    content = """---
+title: Priority Title
+---
+
+# Document"""
+
+    doc = parse(content, "ignored_filename.md")
+    executed_doc = execute(doc)
+    output = render(executed_doc, "html")
+
+    # Should use metadata title, not filename
+    assert "<title>Priority Title</title>" in output
+    assert "ignored_filename" not in output

@@ -1,3 +1,7 @@
+#' ---
+#' title: Data Analysis with Nhandu
+#' ---
+#'
 #' # Data Analysis with Nhandu
 #'
 #' This example demonstrates basic data analysis capabilities using Python's built-in libraries and common data science patterns.

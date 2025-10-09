@@ -1,3 +1,7 @@
+#' ---
+#' title: Scientific Computation with Nhandu
+#' ---
+#'
 #' # Scientific Computation with Nhandu
 #'
 #' This example demonstrates more advanced scientific computing scenarios, including numerical methods, simulations, and mathematical analysis.
