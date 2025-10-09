@@ -179,12 +179,10 @@ desktop.ini
 *~
 
 # Nhandu specific - generated output files
-examples/output/
-examples/figures/
+docs/output/
+docs/*.out
+docs/*.html
 tests/fixtures/figures/
-*.out
-*.html
-!examples/*.html
 *.pdf
 
 # Temporary files
