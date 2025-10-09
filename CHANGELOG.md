@@ -5,6 +5,50 @@ All notable changes to Nhandu will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2025-10-09
+
+### Added
+- **Jupyter Notebook Integration** - Full import/export support for Jupyter notebooks
+  - New CLI command: `nhandu import-notebook` - Convert `.ipynb` → `.py` literate format
+  - New CLI command: `nhandu export-notebook` - Convert `.py` → `.ipynb` notebook format
+  - Conversion features:
+    - Markdown cells ↔ `#'` markdown comments
+    - Code cells ↔ Regular Python code
+    - Hidden cells (with `hide` tag) ↔ `#| hide` blocks
+    - Notebook metadata ↔ YAML frontmatter
+    - Outputs discarded on import (regeneratable)
+    - No outputs on export by default (symmetric with import)
+  - Optional `--execute` flag to run notebook cells during export
+  - Optional `--kernel` parameter for kernel selection
+  - Round-trip conversion support with best-effort preservation
+  - Comprehensive test suite with 14 tests covering import, export, and round-trip
+  - Tutorial documentation (`docs/07_jupyter_conversion.md`)
+- New optional dependency group `[jupyter]` with `nbformat>=5.0`
+- Graceful error handling when nbformat not installed (with install instructions)
+- Inline code conversion: `<%= expr %>` converted to f-strings where possible during export
+- 4 test fixture notebooks for testing various conversion scenarios
+
+### Changed
+- Project structure: Added `src/nhandu/converters/` module for format conversion
+- README.md: Added "Jupyter Notebook Integration" section with usage examples
+- CLI: Enhanced argument parser to support subcommands while maintaining backward compatibility
+- CLI help now includes separate documentation for notebook commands
+
+### Documentation
+- Comprehensive Jupyter integration tutorial with examples and best practices
+- Updated README with import/export workflow examples
+- Added comparison table: Jupyter vs Nhandu literate Python
+- Documented use cases: git-friendly notebooks, report generation, code review
+- Added tips for metadata preservation and round-trip conversion
+- Updated roadmap to reference detailed v0.2.0 planning document
+
+### Technical Details
+- New module: `nhandu.converters.notebook` with import/export functions
+- Cell type mapping: markdown, code, raw cells handled appropriately
+- Metadata extraction from notebook to YAML frontmatter
+- Python comment preservation during round-trip conversion
+- Best-effort structural preservation (cell order, types, content)
+
 ## [0.1.3] - 2025-10-09
 
 ### Added
@@ -110,6 +154,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optional: matplotlib, numpy, pandas (for examples/tests)
 - MIT License
 
+[0.2.0]: https://github.com/tresoldi/nhandu/compare/v0.1.3...v0.2.0
 [0.1.3]: https://github.com/tresoldi/nhandu/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/tresoldi/nhandu/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/tresoldi/nhandu/compare/v0.1.0...v0.1.1

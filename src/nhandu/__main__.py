@@ -13,6 +13,37 @@ from nhandu.parser_py import parse_python
 
 def main(argv: list[str] | None = None) -> int:
     """Main entry point for the CLI."""
+    # Handle the case where user provides a file without a subcommand
+    # (backward compatibility)
+    if argv is None:
+        argv = sys.argv[1:]
+
+    # If first arg looks like a file and not a subcommand, parse as default mode
+    if (
+        argv
+        and not argv[0].startswith("-")
+        and argv[0] not in ["import-notebook", "export-notebook"]
+    ):
+        # Default mode: process document
+        parser = create_default_argument_parser()
+        args = parser.parse_args(argv)
+
+        if args.version:
+            print(f"nhandu {__version__}")
+            return 0
+
+        try:
+            process_document(args)
+            return 0
+        except Exception as e:
+            if args.verbose:
+                import traceback
+                traceback.print_exc()
+            else:
+                print(f"Error: {e}", file=sys.stderr)
+            return 1
+
+    # Subcommand mode
     parser = create_argument_parser()
     args = parser.parse_args(argv)
 
@@ -21,10 +52,17 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     try:
-        process_document(args)
+        # Dispatch to appropriate handler
+        if hasattr(args, "func"):
+            args.func(args)
+        else:
+            # No subcommand and no file - show help
+            parser.print_help()
+            return 1
         return 0
     except Exception as e:
-        if args.verbose:
+        verbose = getattr(args, "verbose", False)
+        if verbose:
             import traceback
 
             traceback.print_exc()
@@ -33,8 +71,8 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
 
-def create_argument_parser() -> argparse.ArgumentParser:
-    """Create the argument parser."""
+def create_default_argument_parser() -> argparse.ArgumentParser:
+    """Create the default argument parser (for processing documents)."""
     parser = argparse.ArgumentParser(
         prog="nhandu",
         description="A literate programming tool for Python",
@@ -43,7 +81,6 @@ def create_argument_parser() -> argparse.ArgumentParser:
 
     parser.add_argument(
         "input",
-        nargs="?",
         help="Input file to process (.md markdown or .py literate Python)",
     )
 
@@ -104,6 +141,85 @@ def create_argument_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Show version and exit",
     )
+
+    return parser
+
+
+def create_argument_parser() -> argparse.ArgumentParser:
+    """Create the argument parser with subcommands."""
+    parser = argparse.ArgumentParser(
+        prog="nhandu",
+        description="A literate programming tool for Python",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+
+    # Global arguments
+    parser.add_argument(
+        "--version",
+        action="store_true",
+        help="Show version and exit",
+    )
+
+    # Create subparsers for commands
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # Subcommand: import-notebook
+    import_parser = subparsers.add_parser(
+        "import-notebook",
+        help="Import Jupyter notebook to Nhandu format",
+        description="Convert a Jupyter notebook (.ipynb) to Nhandu literate Python (.py)",
+    )
+    import_parser.add_argument(
+        "input",
+        help="Input Jupyter notebook file (.ipynb)",
+    )
+    import_parser.add_argument(
+        "-o",
+        "--output",
+        required=True,
+        help="Output Python file (.py)",
+    )
+    import_parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Enable verbose output",
+    )
+    import_parser.set_defaults(func=import_notebook_command)
+
+    # Subcommand: export-notebook
+    export_parser = subparsers.add_parser(
+        "export-notebook",
+        help="Export Nhandu document to Jupyter notebook",
+        description="Convert a Nhandu literate Python file (.py) to Jupyter notebook (.ipynb)",
+    )
+    export_parser.add_argument(
+        "input",
+        help="Input Nhandu Python file (.py)",
+    )
+    export_parser.add_argument(
+        "-o",
+        "--output",
+        required=True,
+        help="Output Jupyter notebook file (.ipynb)",
+    )
+    export_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="Execute notebook after creation",
+    )
+    export_parser.add_argument(
+        "--kernel",
+        default="python3",
+        help="Kernel name to use if executing (default: python3)",
+    )
+    export_parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Enable verbose output",
+    )
+    export_parser.set_defaults(func=export_notebook_command)
 
     return parser
 
@@ -200,6 +316,62 @@ def load_config(doc: Document, config_path: str) -> None:
             if hasattr(doc.metadata, key):
                 setattr(doc.metadata, key, value)
             doc.metadata.raw[key] = value
+
+
+def import_notebook_command(args: argparse.Namespace) -> None:
+    """
+    Handle import-notebook command.
+
+    @param args: Command-line arguments.
+    """
+    from nhandu.converters import import_notebook
+
+    input_path = Path(args.input)
+    output_path = Path(args.output)
+
+    if args.verbose:
+        print(f"Importing notebook {input_path} to {output_path}...")
+
+    import_notebook(input_path, output_path)
+
+    if args.verbose:
+        print(f"Successfully imported to {output_path}")
+        print(
+            "\nNote: Notebook outputs were discarded. "
+            "Run the file with nhandu to regenerate them."
+        )
+
+
+def export_notebook_command(args: argparse.Namespace) -> None:
+    """
+    Handle export-notebook command.
+
+    @param args: Command-line arguments.
+    """
+    from nhandu.converters import export_notebook
+
+    input_path = Path(args.input)
+    output_path = Path(args.output)
+
+    if args.verbose:
+        print(f"Exporting {input_path} to notebook {output_path}...")
+
+    export_notebook(
+        input_path,
+        output_path,
+        execute=args.execute,
+        kernel=args.kernel,
+    )
+
+    if args.verbose:
+        if args.execute:
+            print(f"Successfully exported and executed to {output_path}")
+        else:
+            print(f"Successfully exported to {output_path}")
+            print(
+                "\nNote: Notebook has no outputs. "
+                "Open in Jupyter and run cells to generate outputs."
+            )
 
 
 if __name__ == "__main__":

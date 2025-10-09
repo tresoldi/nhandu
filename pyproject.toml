@@ -46,7 +46,11 @@ test = [
     "pandas>=2.0",
     "matplotlib>=3.5",
 ]
-all = ["nhandu[dev,test]"]
+jupyter = [
+    "nbformat>=5.0",
+    "pyyaml>=6.0",  # For frontmatter parsing
+]
+all = ["nhandu[dev,test,jupyter]"]
 
 [project.scripts]
 nhandu = "nhandu.__main__:main"
