@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 import pytest
@@ -325,7 +324,7 @@ def test_round_trip_conversion(fixtures_dir: Path, temp_output_dir: Path) -> Non
     assert len(original.cells) == len(final.cells)
 
     # Check cell types match
-    for orig_cell, final_cell in zip(original.cells, final.cells):
+    for orig_cell, final_cell in zip(original.cells, final.cells, strict=False):
         assert orig_cell.cell_type == final_cell.cell_type
 
         # Check content is similar (may have whitespace differences)

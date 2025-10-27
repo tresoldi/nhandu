@@ -151,7 +151,9 @@ print(f"Working dir: {os.getcwd()}")
 
         input_path.write_text(content)
 
-        exit_code = main([str(input_path), "-o", str(output_path), "--working-dir", str(work_dir)])
+        exit_code = main(
+            [str(input_path), "-o", str(output_path), "--working-dir", str(work_dir)]
+        )
         assert exit_code == 0
 
         output_content = output_path.read_text()

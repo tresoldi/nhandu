@@ -6,6 +6,7 @@ import contextlib
 import io
 import os
 import sys
+from collections.abc import Generator
 from pathlib import Path
 from typing import Any
 
@@ -18,7 +19,7 @@ from nhandu.models import (
 
 
 @contextlib.contextmanager
-def _script_environment(source_path: Path | None):
+def _script_environment(source_path: Path | None) -> Generator[None, None, None]:
     """
     Context manager to set up Python script environment variables.
 
@@ -35,14 +36,14 @@ def _script_environment(source_path: Path | None):
     try:
         # Set up sys.argv[0] to match script path
         if source_path:
-            sys.argv = [str(source_path.absolute())] + sys.argv[1:]
+            sys.argv = [str(source_path.absolute()), *sys.argv[1:]]
             # Add script directory to sys.path[0] for relative imports
             script_dir = str(source_path.parent.absolute())
             if script_dir not in sys.path:
                 sys.path.insert(0, script_dir)
         else:
             # For stdin/in-memory, use current working directory
-            sys.argv = [str(Path.cwd() / "<stdin>")] + sys.argv[1:]
+            sys.argv = [str(Path.cwd() / "<stdin>"), *sys.argv[1:]]
             cwd = str(Path.cwd().absolute())
             if cwd not in sys.path:
                 sys.path.insert(0, cwd)

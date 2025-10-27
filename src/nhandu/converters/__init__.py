@@ -7,4 +7,4 @@ programming format and other notebook formats like Jupyter.
 
 from nhandu.converters.notebook import export_notebook, import_notebook
 
-__all__ = ["import_notebook", "export_notebook"]
+__all__ = ["export_notebook", "import_notebook"]

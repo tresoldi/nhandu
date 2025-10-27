@@ -193,7 +193,7 @@ def import_notebook(ipynb_path: Path, output_path: Path) -> None:
         raise FileNotFoundError(f"Notebook not found: {ipynb_path}")
 
     # Read notebook
-    with open(ipynb_path, "r", encoding="utf-8") as f:
+    with open(ipynb_path, encoding="utf-8") as f:
         notebook = nbformat.read(f, as_version=4)  # type: ignore
 
     # Extract metadata
@@ -276,7 +276,7 @@ def export_notebook(
         raise FileNotFoundError(f"Python file not found: {py_path}")
 
     # Read and parse the Python file
-    with open(py_path, "r", encoding="utf-8") as f:
+    with open(py_path, encoding="utf-8") as f:
         content = f.read()
 
     # Parse the content (we'll use a simple regex-based parser)
@@ -389,7 +389,11 @@ def _parse_py_to_cells(content: str) -> list["NotebookNode"]:
                     cells.append(cell)
 
         # Regular code (including Python comments, but not #' or #|)
-        elif line.strip() and not line.strip().startswith("#'") and not line.strip().startswith("#|"):
+        elif (
+            line.strip()
+            and not line.strip().startswith("#'")
+            and not line.strip().startswith("#|")
+        ):
             # Collect consecutive code lines (including Python # comments)
             code_lines = []
             while i < len(lines):

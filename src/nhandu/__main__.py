@@ -166,7 +166,9 @@ def create_argument_parser() -> argparse.ArgumentParser:
     import_parser = subparsers.add_parser(
         "import-notebook",
         help="Import Jupyter notebook to Nhandu format",
-        description="Convert a Jupyter notebook (.ipynb) to Nhandu literate Python (.py)",
+        description=(
+            "Convert a Jupyter notebook (.ipynb) to Nhandu literate Python (.py)"
+        ),
     )
     import_parser.add_argument(
         "input",
@@ -190,7 +192,9 @@ def create_argument_parser() -> argparse.ArgumentParser:
     export_parser = subparsers.add_parser(
         "export-notebook",
         help="Export Nhandu document to Jupyter notebook",
-        description="Convert a Nhandu literate Python file (.py) to Jupyter notebook (.ipynb)",
+        description=(
+            "Convert a Nhandu literate Python file (.py) to Jupyter notebook (.ipynb)"
+        ),
     )
     export_parser.add_argument(
         "input",

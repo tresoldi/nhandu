@@ -1,9 +1,8 @@
 """Tests for the parser module (Python literate format)."""
 
-from pathlib import Path
 
 from nhandu.models import CodeBlock, MarkdownBlock
-from nhandu.parser import parse, PythonLiterateParser
+from nhandu.parser import PythonLiterateParser, parse
 
 
 def test_parse_basic_document():

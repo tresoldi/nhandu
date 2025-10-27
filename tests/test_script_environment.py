@@ -5,11 +5,9 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-import pytest
-
-from nhandu import execute, parse
+from nhandu import execute
 from nhandu.executor import _script_environment
-from nhandu.models import CodeBlock, Document
+from nhandu.models import CodeBlock
 from nhandu.parser import parse
 
 

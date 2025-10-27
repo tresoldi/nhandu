@@ -3,7 +3,6 @@
 from nhandu.executor import execute
 from nhandu.models import CodeBlock, MarkdownBlock
 from nhandu.parser import parse
-from nhandu.parser import parse
 from nhandu.renderer import render
 
 
@@ -155,7 +154,7 @@ def test_defensive_render_empty_code_with_error():
 
 
 def test_mixed_empty_and_non_empty_blocks():
-    """Test document with mix of empty and non-empty blocks in Python literate format."""
+    """Test mix of empty and non-empty blocks in Python literate format."""
     content = """#' # Title
 #'
 #' Section 1
