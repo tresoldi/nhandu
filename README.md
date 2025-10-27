@@ -57,7 +57,12 @@ print(f"Std Dev: {data.std():.3f}")
 nhandu analysis.py
 ```
 
-This creates `analysis.html` with your code, output, and nicely formatted documentation, from a plain Python script.
+This creates `analysis.out.py` (markdown format) with your code, output, and documentation.
+
+For HTML output:
+```bash
+nhandu analysis.py --format html  # Creates analysis.html
+```
 
 ## Features
 
@@ -194,10 +199,10 @@ pip install -e .
 ### Basic Usage
 
 ```bash
-nhandu document.py                       # Process literate Python file → document.html
-nhandu document.md                       # Process markdown file → document.html
+nhandu document.py                       # Process → document.out.py (markdown)
+nhandu document.py --format html         # Process → document.html
 nhandu document.py -o report.html        # Specify output file
-nhandu document.py --format md           # Output as markdown
+nhandu document.py --format md           # Output as markdown (default)
 nhandu document.py --code-theme monokai  # Custom syntax theme
 nhandu document.py --verbose             # Show processing details
 ```

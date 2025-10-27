@@ -2,7 +2,7 @@
 document_type: llm_guide
 target_audience: coding_agents
 library: nhandu
-version: 0.1.0
+version: 0.3.0
 purpose: Guide for AI coding assistants to generate literate Python programs using Nhandu
 ---
 
@@ -115,7 +115,7 @@ sales_data = [100, 150, 200, 175, 225]
 - Inline code shares the same namespace as code blocks
 - Expressions are evaluated and replaced with their string representation
 - Statements execute but produce no visible output
-- Works in both `.py` literate files and `.md` markdown files
+- Works in `.py` literate Python files
 - Can reference variables from code blocks or hidden blocks
 
 **When to Use Inline Code:**
