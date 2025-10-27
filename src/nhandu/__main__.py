@@ -8,7 +8,6 @@ from pathlib import Path
 
 from nhandu import __version__, execute, parse, render
 from nhandu.models import Document
-from nhandu.parser_py import parse_python
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -81,7 +80,7 @@ def create_default_argument_parser() -> argparse.ArgumentParser:
 
     parser.add_argument(
         "input",
-        help="Input file to process (.md markdown or .py literate Python)",
+        help="Input file to process (.py literate Python)",
     )
 
     parser.add_argument(
@@ -236,15 +235,11 @@ def process_document(args: argparse.Namespace) -> None:
     # Read input file
     content = input_path.read_text(encoding="utf-8")
 
-    # Detect format and parse document
+    # Parse document (Python literate format)
     if args.verbose:
         print(f"Parsing {input_path}...")
 
-    # Auto-detect Python literate format by file extension or presence of #' markers
-    if input_path.suffix == ".py" or "#'" in content:
-        doc = parse_python(content, str(input_path))
-    else:
-        doc = parse(content, str(input_path))
+    doc = parse(content, str(input_path))
 
     # Load config if specified
     if args.config:

@@ -3,7 +3,7 @@
 from nhandu.executor import execute
 from nhandu.models import CodeBlock, MarkdownBlock
 from nhandu.parser import parse
-from nhandu.parser_py import parse_python
+from nhandu.parser import parse
 from nhandu.renderer import render
 
 
@@ -80,7 +80,7 @@ def test_empty_markdown_block():
 
 x = 42"""
 
-    doc = parse_python(content)
+    doc = parse(content)
 
     # Should have 1 markdown block and 1 code block, no empty markdown
     assert len(doc.blocks) == 2
@@ -98,7 +98,7 @@ def test_empty_code_block_python_literate():
 
 #' More text."""
 
-    doc = parse_python(content)
+    doc = parse(content)
 
     # Should only have markdown blocks
     assert len(doc.blocks) == 2
@@ -115,7 +115,7 @@ def test_empty_hidden_block():
 
 #' Text after."""
 
-    doc = parse_python(content)
+    doc = parse(content)
 
     # Should only have markdown blocks, no empty hidden block
     assert len(doc.blocks) == 2
@@ -133,7 +133,7 @@ def test_empty_hidden_block_with_comments():
 
 #' Text after."""
 
-    doc = parse_python(content)
+    doc = parse(content)
 
     # Should only have markdown blocks
     assert len(doc.blocks) == 2
@@ -151,7 +151,7 @@ x = 42
 
 #' Text after."""
 
-    doc = parse_python(content)
+    doc = parse(content)
 
     # Should have 2 markdown blocks and 1 hidden code block
     assert len(doc.blocks) == 3

@@ -24,8 +24,6 @@ Nhandu offers a different solution:
 - **Zero configuration needed**: smart defaults get you started immediately
 - **Python-native**: designed specifically for the Python ecosystem
 
-Nhandu also supports traditional `.md` files with code blocks if you prefer that style.
-
 ## Quick Start
 
 ### Your First Literate Program
@@ -100,9 +98,9 @@ It is also possible to use a configuration file (`nhandu.yaml`) or CLI arguments
 
 ## How It Works
 
-### Literate Python Format (`.py` files)
+### The Python Literate Format
 
-Nhandu treats Python files specially when they contain markdown comments:
+Nhandu uses a simple convention: lines starting with `#'` are markdown, everything else is Python code:
 
 ```python
 #' # This is a markdown heading
@@ -132,25 +130,6 @@ import matplotlib.pyplot as plt
 data = pd.read_csv("data.csv")
 ```
 
-### Traditional Markdown Format (`.md` files)
-
-You can also use standard markdown files with code blocks:
-
-````markdown
-# My Analysis
-
-Here's some Python code:
-
-```python
-import numpy as np
-x = np.linspace(0, 10, 100)
-print(f"Generated {len(x)} points")
-```
-
-The output will appear in your rendered document. In case of HTML output, any figures are embedded in the file, so that you have a single file to distribute.
-
-````
-
 ### Execution Model
 
 - **Shared namespace**: All code blocks share the same Python environment
@@ -165,7 +144,7 @@ You can embed Python expressions directly within markdown text using inline code
 - **`<%= expression %>`** - Evaluates the expression and displays the result
 - **`<% statement %>`** - Executes code without displaying output
 
-This works in both `.py` literate files and traditional `.md` files:
+Example:
 
 ```python
 #' # Sales Report

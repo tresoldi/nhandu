@@ -1,7 +1,7 @@
 """Tests for inline code in Python literate format."""
 
 from nhandu.executor import execute
-from nhandu.parser_py import parse_python
+from nhandu.parser import parse
 from nhandu.renderer import render
 
 
@@ -9,7 +9,7 @@ def test_inline_expression_in_python_literate():
     """Test inline expressions in Python literate format."""
     content = """#' Result: <%= 2 + 2 %>"""
 
-    doc = parse_python(content)
+    doc = parse(content)
     executed_doc = execute(doc)
 
     markdown_block = executed_doc.blocks[0]
@@ -21,7 +21,7 @@ def test_inline_statement_in_python_literate():
     content = """#' <% x = 42 %>
 #' The value is <%= x %>"""
 
-    doc = parse_python(content)
+    doc = parse(content)
     executed_doc = execute(doc)
 
     markdown_block = executed_doc.blocks[0]
@@ -41,7 +41,7 @@ y = 50
 #' Sum: <%= x + y %>
 #' Product: <%= x * y %>"""
 
-    doc = parse_python(content)
+    doc = parse(content)
     executed_doc = execute(doc)
 
     # Find markdown blocks
@@ -70,7 +70,7 @@ radius = 10
 #' Area: <%= math.pi * radius ** 2 %>
 #' Circumference: <%= 2 * math.pi * radius %>"""
 
-    doc = parse_python(content)
+    doc = parse(content)
     executed_doc = execute(doc)
 
     markdown_blocks = [
@@ -89,7 +89,7 @@ def test_inline_code_multiple_expressions():
     content = """#' Values: <%= 1 %>, <%= 2 %>, <%= 3 %>
 #' Sum: <%= 1 + 2 + 3 %>"""
 
-    doc = parse_python(content)
+    doc = parse(content)
     executed_doc = execute(doc)
 
     markdown_block = executed_doc.blocks[0]
@@ -104,7 +104,7 @@ def test_inline_code_with_formatting():
 #' Formatted: <%= f"{value:.2f}" %>
 #' With commas: <%= f"{value:,.2f}" %>"""
 
-    doc = parse_python(content)
+    doc = parse(content)
     executed_doc = execute(doc)
 
     markdown_block = executed_doc.blocks[0]
@@ -120,7 +120,7 @@ def test_inline_code_conditional():
 #' Score: <%= x %>
 #' Result: <%= result %>"""
 
-    doc = parse_python(content)
+    doc = parse(content)
     executed_doc = execute(doc)
 
     markdown_block = executed_doc.blocks[0]
@@ -134,7 +134,7 @@ def test_inline_code_list_comprehension():
 #' Squares: <%= [n**2 for n in numbers] %>
 #' Evens: <%= [n for n in numbers if n % 2 == 0] %>"""
 
-    doc = parse_python(content)
+    doc = parse(content)
     executed_doc = execute(doc)
 
     markdown_block = executed_doc.blocks[0]
@@ -152,7 +152,7 @@ x = 10
 #' <% counter = counter + x %>
 #' After increment: <%= counter %>"""
 
-    doc = parse_python(content)
+    doc = parse(content)
     executed_doc = execute(doc)
 
     markdown_blocks = [
@@ -169,7 +169,7 @@ def test_inline_code_error_handling():
 #' Value: <%= undefined_variable %>
 #' After error"""
 
-    doc = parse_python(content)
+    doc = parse(content)
     executed_doc = execute(doc)
 
     # Should keep original text on error
@@ -184,7 +184,7 @@ def test_inline_code_rendering_html():
     content = """#' <% x = 42 %>
 #' The answer is <%= x %>."""
 
-    doc = parse_python(content)
+    doc = parse(content)
     executed_doc = execute(doc)
     html_output = render(executed_doc, "html")
 
@@ -199,7 +199,7 @@ def test_inline_code_rendering_markdown():
     content = """#' <% name = "Nhandu" %>
 #' Welcome to <%= name %>!"""
 
-    doc = parse_python(content)
+    doc = parse(content)
     executed_doc = execute(doc)
     md_output = render(executed_doc, "markdown")
 
@@ -234,7 +234,7 @@ sales_q4 = 189000
 #' - Growth: <%= f"{growth:.1f}" %>%
 #' - Status: <%= status %> target"""
 
-    doc = parse_python(content)
+    doc = parse(content)
     executed_doc = execute(doc)
 
     markdown_blocks = [

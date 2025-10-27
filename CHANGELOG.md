@@ -5,6 +5,71 @@ All notable changes to Nhandu will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2025-10-27
+
+### BREAKING CHANGES
+
+**Nhandu is now Python-only literate programming.** Traditional markdown (`.md`) file support has been removed to simplify the codebase and provide a clearer, more focused vision.
+
+### Removed
+- **Markdown file format support (`.md` files)** - Complete removal of dual-format support
+  - Deleted `src/nhandu/parser.py` (markdown parser)
+  - Removed all `.md` test fixtures (6 files) and example docs (5 files)
+  - Removed markdown format detection from CLI
+- All references to `.md` format in README and documentation
+
+### Changed
+- **Unified parser**: `parser_py.py` renamed to `parser.py` and is now the only parser
+  - `parse()` function now always parses Python literate format (`#'` comments)
+  - `parse_python()` provided as backward compatibility alias
+- **CLI simplified**: Removed format auto-detection, always expects `.py` files
+  - Updated help text: "Input file to process (.py literate Python)"
+- **README**: Removed "Traditional Markdown Format" section and all `.md` mentions
+- **Project focus**: Clear Python-first philosophy - one format, one parser, one way
+
+### Why This Change?
+
+Nhandu's value proposition is **literate programming in plain Python files**. Supporting both formats:
+- Split focus and complicated the codebase
+- Confused users about which format to use
+- Maintained two parsers for essentially the same functionality
+- Diluted the "Python-native" messaging
+
+Going forward, Nhandu is about one thing: writing beautiful, executable documents in `.py` files using `#'` comments for markdown. This makes the tool simpler, more maintainable, and more aligned with its core vision.
+
+### Migration Notes
+
+If you have existing `.md` files, manual conversion is straightforward:
+
+**From markdown**:
+````markdown
+# My Document
+
+Text here.
+
+```python
+code_here()
+```
+````
+
+**To Python literate**:
+```python
+#' # My Document
+#'
+#' Text here.
+
+code_here()
+```
+
+The pattern: move markdown outside code blocks to `#'` comments, code blocks become regular Python.
+
+### Technical Details
+- Simplified import structure in `__init__.py` and `__main__.py`
+- Updated all test imports from `parse_python` to `parse`
+- Rewrote `test_parser.py` to test Python literate format exclusively
+- Parser module structure unified (one file, clear responsibility)
+- Version bumped to 0.3.0 to indicate breaking change
+
 ## [0.2.0] - 2025-10-09
 
 ### Added

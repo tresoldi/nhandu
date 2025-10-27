@@ -220,7 +220,7 @@ def test_multiple_tables():
 
 def test_table_in_python_literate_format():
     """Test table rendering in Python literate format."""
-    from nhandu.parser_py import parse_python
+    from nhandu.parser import parse
 
     content = """#' # Analysis
 #'
@@ -232,7 +232,7 @@ def test_table_in_python_literate_format():
 print("Analysis complete")
 """
 
-    doc = parse_python(content)
+    doc = parse(content)
     executed = execute(doc)
     html = render(executed, "html")
 

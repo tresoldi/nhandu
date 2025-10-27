@@ -1,23 +1,21 @@
-"""Tests for the parser module."""
+"""Tests for the parser module (Python literate format)."""
 
 from pathlib import Path
 
 from nhandu.models import CodeBlock, MarkdownBlock
-from nhandu.parser import parse
+from nhandu.parser import parse, PythonLiterateParser
 
 
 def test_parse_basic_document():
-    """Test parsing a basic document with code blocks."""
-    content = """# Title
+    """Test parsing a basic Python literate document."""
+    content = """#' # Title
+#'
+#' Some text here.
 
-Some text here.
-
-```python
 print("hello")
 x = 42
-```
 
-More text."""
+#' More text."""
 
     doc = parse(content)
 
@@ -34,15 +32,15 @@ More text."""
 
 def test_parse_with_frontmatter():
     """Test parsing document with YAML frontmatter."""
-    content = """---
-title: Test Document
-output: html
-plot_dpi: 150
----
-
-# Content
-
-Some content here."""
+    content = """#' ---
+#' title: Test Document
+#' output: html
+#' plot_dpi: 150
+#' ---
+#'
+#' # Content
+#'
+#' Some content here."""
 
     doc = parse(content)
 
@@ -54,18 +52,17 @@ Some content here."""
 
 
 def test_parse_hidden_code_blocks():
-    """Test parsing hidden code blocks."""
-    content = """```python {hide=true}
+    """Test parsing hidden code blocks with #| hide markers."""
+    content = """#| hide
 hidden_code = True
-```
+#|
 
-```python {hidden}
+#| hide
 also_hidden = True
-```
+#|
 
-```python
 visible_code = True
-```"""
+"""
 
     doc = parse(content)
 
@@ -77,33 +74,34 @@ visible_code = True
     assert doc.blocks[2].hidden is False
 
 
-def test_parse_multiple_languages():
-    """Test parsing code blocks with different languages."""
-    content = """```python
-python_code = True
-```
+def test_parse_mixed_markdown_and_code():
+    """Test parsing with interleaved markdown and code."""
+    content = """#' # Introduction
+#' This is some text.
 
-```javascript
-let jsCode = true;
-```
+x = 10
+print(x)
 
-```bash
-echo "shell command"
-```"""
+#' ## More text
+#' Another section.
+
+y = 20
+print(y)
+"""
 
     doc = parse(content)
 
-    assert len(doc.blocks) == 3
-    assert doc.blocks[0].language == "python"
-    assert doc.blocks[1].language == "javascript"
-    assert doc.blocks[2].language == "bash"
+    # Should have alternating markdown and code blocks
+    assert len(doc.blocks) == 4
+    assert isinstance(doc.blocks[0], MarkdownBlock)
+    assert isinstance(doc.blocks[1], CodeBlock)
+    assert isinstance(doc.blocks[2], MarkdownBlock)
+    assert isinstance(doc.blocks[3], CodeBlock)
 
 
 def test_extract_inline_code():
     """Test extracting inline code from markdown."""
-    from nhandu.parser import NhanduParser
-
-    parser = NhanduParser()
+    parser = PythonLiterateParser()
     text = "The result is <%= 2 + 2 %> and <% x = 5 %> the value is <%= x %>."
 
     inline_codes = parser.extract_inline_code(text)
@@ -117,30 +115,14 @@ def test_extract_inline_code():
     assert inline_codes[2].is_statement is False
 
 
-def test_parse_fixture_files():
-    """Test parsing all fixture files."""
-    fixtures_dir = Path(__file__).parent / "fixtures"
-
-    for fixture_file in fixtures_dir.glob("*.md"):
-        content = fixture_file.read_text()
-        doc = parse(content, str(fixture_file))
-
-        # Basic validation
-        assert isinstance(doc.blocks, list)
-        assert doc.source_path == fixture_file
-
-        # Should have at least some content
-        assert len(doc.blocks) > 0
-
-
 def test_parse_invalid_yaml():
     """Test parsing with invalid YAML frontmatter."""
-    content = """---
-title: Test
-invalid: [unclosed list
----
-
-# Content"""
+    content = """#' ---
+#' title: Test
+#' invalid: [unclosed list
+#' ---
+#'
+#' # Content"""
 
     doc = parse(content)
 
@@ -159,11 +141,71 @@ def test_empty_document():
 
 def test_only_frontmatter():
     """Test parsing document with only frontmatter."""
-    content = """---
-title: Only Metadata
----"""
+    content = """#' ---
+#' title: Only Metadata
+#' ---"""
 
     doc = parse(content)
 
     assert doc.metadata.title == "Only Metadata"
     assert len(doc.blocks) == 0
+
+
+def test_code_with_regular_comments():
+    """Test that regular Python comments are preserved in code blocks."""
+    content = """#' # Document
+
+# This is a regular comment
+x = 42  # inline comment
+print(x)
+"""
+
+    doc = parse(content)
+
+    assert len(doc.blocks) == 2
+    code_block = doc.blocks[1]
+    assert "# This is a regular comment" in code_block.content
+    assert "# inline comment" in code_block.content
+
+
+def test_empty_code_blocks_filtered():
+    """Test that empty code blocks are filtered out."""
+    content = """#' # Document
+
+# Just a comment
+
+#' More text
+
+x = 42
+"""
+
+    doc = parse(content)
+
+    # Should not include the code block with only a comment
+    assert len(doc.blocks) == 2
+    assert isinstance(doc.blocks[0], MarkdownBlock)
+    assert isinstance(doc.blocks[1], CodeBlock)
+    assert "x = 42" in doc.blocks[1].content
+
+
+def test_multiline_markdown():
+    """Test multiline markdown blocks."""
+    content = """#' # Title
+#'
+#' This is a longer paragraph
+#' that spans multiple lines
+#' of markdown comments.
+#'
+#' - List item 1
+#' - List item 2
+
+print("code")
+"""
+
+    doc = parse(content)
+
+    assert len(doc.blocks) == 2
+    markdown_block = doc.blocks[0]
+    assert "# Title" in markdown_block.content
+    assert "This is a longer paragraph" in markdown_block.content
+    assert "- List item 1" in markdown_block.content

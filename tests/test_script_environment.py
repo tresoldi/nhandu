@@ -10,7 +10,7 @@ import pytest
 from nhandu import execute, parse
 from nhandu.executor import _script_environment
 from nhandu.models import CodeBlock, Document
-from nhandu.parser_py import parse_python
+from nhandu.parser import parse
 
 
 def get_code_block_output(executed_doc):
@@ -244,7 +244,7 @@ from pathlib import Path
 print(f"Directory: {Path(__file__).parent}")
 """
     doc_path = tmp_path / "literate.py"
-    doc = parse_python(content, str(doc_path))
+    doc = parse(content, str(doc_path))
     doc.source_path = doc_path
 
     executed = execute(doc)

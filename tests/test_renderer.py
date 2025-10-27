@@ -446,7 +446,7 @@ Some content."""
 
 def test_html_title_from_filename_python():
     """Test filename fallback for Python literate files."""
-    from nhandu.parser_py import parse_python
+    from nhandu.parser import parse
 
     content = """#' # Analysis
 #'
@@ -455,7 +455,7 @@ def test_html_title_from_filename_python():
 x = 42
 """
 
-    doc = parse_python(content, "data_analysis.py")
+    doc = parse(content, "data_analysis.py")
     executed_doc = execute(doc)
     output = render(executed_doc, "html")
 
