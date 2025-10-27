@@ -5,6 +5,7 @@ from __future__ import annotations
 import contextlib
 import io
 import os
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -14,6 +15,44 @@ from nhandu.models import (
     ExecutedDocument,
     MarkdownBlock,
 )
+
+
+@contextlib.contextmanager
+def _script_environment(source_path: Path | None):
+    """
+    Context manager to set up Python script environment variables.
+
+    Sets up sys.path and sys.argv to match behavior of running a Python script,
+    then restores original values on exit.
+
+    @param source_path: Path to the source document, or None for stdin/in-memory.
+    @yield: None
+    """
+    # Save original state
+    original_path = sys.path.copy()
+    original_argv = sys.argv.copy()
+
+    try:
+        # Set up sys.argv[0] to match script path
+        if source_path:
+            sys.argv = [str(source_path.absolute())] + sys.argv[1:]
+            # Add script directory to sys.path[0] for relative imports
+            script_dir = str(source_path.parent.absolute())
+            if script_dir not in sys.path:
+                sys.path.insert(0, script_dir)
+        else:
+            # For stdin/in-memory, use current working directory
+            sys.argv = [str(Path.cwd() / "<stdin>")] + sys.argv[1:]
+            cwd = str(Path.cwd().absolute())
+            if cwd not in sys.path:
+                sys.path.insert(0, cwd)
+
+        yield
+
+    finally:
+        # Restore original state
+        sys.path[:] = original_path
+        sys.argv[:] = original_argv
 
 
 class CodeExecutor:
@@ -43,8 +82,8 @@ class CodeExecutor:
             output_dir = Path("figures")
         output_dir.mkdir(exist_ok=True)
 
-        # Reset namespace for fresh execution
-        self.namespace = self._create_initial_namespace()
+        # Reset namespace for fresh execution with script environment
+        self.namespace = self._create_initial_namespace(doc.source_path)
         self.figure_counter = 0
 
         executed_doc = ExecutedDocument(
@@ -55,15 +94,17 @@ class CodeExecutor:
         )
 
         try:
-            for block in doc.blocks:
-                if isinstance(block, CodeBlock):
-                    self._execute_code_block(block, output_dir)
-                    executed_doc.blocks.append(block)
-                elif isinstance(block, MarkdownBlock):
-                    executed_block = self._process_markdown_block(block)
-                    executed_doc.blocks.append(executed_block)
-                else:
-                    executed_doc.blocks.append(block)
+            # Set up script environment (sys.path, sys.argv)
+            with _script_environment(doc.source_path):
+                for block in doc.blocks:
+                    if isinstance(block, CodeBlock):
+                        self._execute_code_block(block, output_dir)
+                        executed_doc.blocks.append(block)
+                    elif isinstance(block, MarkdownBlock):
+                        executed_block = self._process_markdown_block(block)
+                        executed_doc.blocks.append(executed_block)
+                    else:
+                        executed_doc.blocks.append(block)
 
         finally:
             # Restore original directory
@@ -71,12 +112,29 @@ class CodeExecutor:
 
         return executed_doc
 
-    def _create_initial_namespace(self) -> dict[str, Any]:
-        """Create initial namespace with common imports."""
+    def _create_initial_namespace(self, source_path: Path | None) -> dict[str, Any]:
+        """
+        Create initial namespace with Python script environment.
+
+        Provides standard special variables that would be present when
+        running a Python script: __name__, __file__, __doc__, __package__, __builtins__.
+
+        @param source_path: Path to the source document, or None for stdin/in-memory.
+        @return: Dictionary with initial namespace.
+        """
+        # Determine __file__ value
+        if source_path:
+            file_path = str(source_path.absolute())
+        else:
+            # For stdin/in-memory, use a sentinel path in current directory
+            file_path = str(Path.cwd() / "<stdin>")
+
         namespace = {
             "__name__": "__main__",
+            "__file__": file_path,
             "__doc__": None,
             "__package__": None,
+            "__builtins__": __builtins__,
         }
         return namespace
 

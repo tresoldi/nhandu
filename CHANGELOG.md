@@ -27,6 +27,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Graceful error handling when nbformat not installed (with install instructions)
 - Inline code conversion: `<%= expr %>` converted to f-strings where possible during export
 - 4 test fixture notebooks for testing various conversion scenarios
+- **Python Script Environment Variables** - Full support for standard Python special variables
+  - `__file__`: Set to absolute path of source document (enables `Path(__file__).parent` pattern)
+  - `__name__`: Always set to `"__main__"` (matches script execution behavior)
+  - `__builtins__`: Full access to built-in functions (len, print, type, etc.)
+  - `sys.argv[0]`: Set to match `__file__` for script-like behavior
+  - `sys.path[0]`: Includes script directory for relative imports
+  - Fallback for stdin/in-memory: `__file__` set to `<stdin>` in current directory
+  - Context manager ensures sys.path and sys.argv are restored after execution
+  - Test suite with 14 tests covering all special variables and real-world usage
+  - Enables loading data files relative to script location
+  - Supports importing modules from script directory
 
 ### Changed
 - Project structure: Added `src/nhandu/converters/` module for format conversion
@@ -48,6 +59,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Metadata extraction from notebook to YAML frontmatter
 - Python comment preservation during round-trip conversion
 - Best-effort structural preservation (cell order, types, content)
+- Enhanced `CodeExecutor._create_initial_namespace()` to include special variables
+- New `_script_environment()` context manager for sys.path and sys.argv management
+- Automatic restoration of global state (sys.path, sys.argv) after execution
+- Absolute paths used for `__file__` to match Python's standard behavior
 
 ## [0.1.3] - 2025-10-09
 
