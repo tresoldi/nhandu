@@ -244,9 +244,9 @@ class CodeExecutor:
 
     def _process_markdown_block(self, block: MarkdownBlock) -> MarkdownBlock:
         """Process inline code in markdown blocks."""
-        from nhandu.parser import NhanduParser
+        from nhandu.parser import PythonLiterateParser
 
-        parser = NhanduParser()
+        parser = PythonLiterateParser()
         text = block.content
         inline_codes = parser.extract_inline_code(text)
 

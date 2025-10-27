@@ -139,22 +139,21 @@ print("Verbose test")
 
 def test_cli_working_directory():
     """Test CLI with custom working directory."""
-    content = """```python
-import os
+    content = """import os
 print(f"Working dir: {os.getcwd()}")
-```"""
+"""
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        input_path = Path(tmpdir) / "test.md"
+        input_path = Path(tmpdir) / "test.py"
+        output_path = Path(tmpdir) / "output.md"
         work_dir = Path(tmpdir) / "workdir"
         work_dir.mkdir()
 
         input_path.write_text(content)
 
-        exit_code = main([str(input_path), "--working-dir", str(work_dir)])
+        exit_code = main([str(input_path), "-o", str(output_path), "--working-dir", str(work_dir)])
         assert exit_code == 0
 
-        output_path = Path(tmpdir) / "test.out.md"
         output_content = output_path.read_text()
         assert str(work_dir) in output_content
 

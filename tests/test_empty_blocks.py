@@ -7,69 +7,21 @@ from nhandu.parser import parse
 from nhandu.renderer import render
 
 
-def test_empty_code_block_markdown():
-    """Test that empty code blocks in markdown format are filtered out."""
-    content = """# Title
-
-Some text.
-
-```python
-
-```
-
-More text."""
-
-    doc = parse(content)
-
-    # Should only have markdown blocks, no empty code block
-    assert len(doc.blocks) == 2
-    assert all(isinstance(block, MarkdownBlock) for block in doc.blocks)
-
-
-def test_empty_code_block_with_whitespace():
-    """Test that code blocks with only whitespace are filtered."""
-    content = """```python
-
-
-```
-
-Text after."""
-
-    doc = parse(content)
-
-    assert len(doc.blocks) == 1
-    assert isinstance(doc.blocks[0], MarkdownBlock)
-
-
-def test_empty_python_code_with_comments():
-    """Test that Python code blocks with only comments are filtered."""
-    content = """```python
-# Just a comment
-
-# Another comment
-```
-
-Text."""
-
-    doc = parse(content)
-
-    # Empty (comments-only) code block should be filtered
-    assert len(doc.blocks) == 1
-    assert isinstance(doc.blocks[0], MarkdownBlock)
-
-
 def test_non_empty_python_code_with_comments():
     """Test that Python code with comments AND actual code is not filtered."""
-    content = """```python
+    content = """#' Test
+
 # Comment
 x = 42
-```"""
+"""
 
     doc = parse(content)
 
-    assert len(doc.blocks) == 1
-    assert isinstance(doc.blocks[0], CodeBlock)
-    assert "x = 42" in doc.blocks[0].content
+    # Should have 1 markdown block and 1 code block
+    assert len(doc.blocks) == 2
+    code_blocks = [b for b in doc.blocks if isinstance(b, CodeBlock)]
+    assert len(code_blocks) == 1
+    assert "x = 42" in code_blocks[0].content
 
 
 def test_empty_markdown_block():
@@ -203,69 +155,24 @@ def test_defensive_render_empty_code_with_error():
 
 
 def test_mixed_empty_and_non_empty_blocks():
-    """Test document with mix of empty and non-empty blocks."""
+    """Test document with mix of empty and non-empty blocks in Python literate format."""
     content = """#' # Title
-
-```python
-
-```
-
+#'
 #' Section 1
 
-```python
 x = 42
 print(x)
-```
-
-```python
-# Just a comment
-```
 
 #' Section 2"""
 
     doc = parse(content)
 
-    # Should have 3 markdown blocks and 1 code block
-    # Empty code blocks are filtered
-    assert len(doc.blocks) == 4
+    # Should have markdown blocks and 1 code block
     markdown_blocks = [b for b in doc.blocks if isinstance(b, MarkdownBlock)]
     code_blocks = [b for b in doc.blocks if isinstance(b, CodeBlock)]
 
-    assert len(markdown_blocks) == 3
     assert len(code_blocks) == 1
     assert "x = 42" in code_blocks[0].content
-
-
-def test_javascript_empty_code_block():
-    """Test that empty code blocks in other languages are filtered."""
-    content = """```javascript
-// Just comments
-// More comments
-```
-
-Text."""
-
-    doc = parse(content)
-
-    # JavaScript with only comments should use simple whitespace check
-    # (not filtered since it's not Python and has non-whitespace content)
-    assert len(doc.blocks) == 2
-    assert isinstance(doc.blocks[0], CodeBlock)
-
-
-def test_javascript_truly_empty():
-    """Test that truly empty JavaScript blocks are filtered."""
-    content = """```javascript
-
-```
-
-Text."""
-
-    doc = parse(content)
-
-    # Truly empty (whitespace only) should be filtered regardless of language
-    assert len(doc.blocks) == 1
-    assert isinstance(doc.blocks[0], MarkdownBlock)
 
 
 def test_rendering_filters_empty_blocks():

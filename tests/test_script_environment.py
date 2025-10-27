@@ -164,7 +164,7 @@ print("<stdin>" in __file__)
 parent = Path(__file__).parent
 print(f"Parent is directory: {parent.is_dir()}")
 """
-    doc = parse(content, source_name=None)
+    doc = parse(content, source_path=None)
     doc.source_path = None
 
     executed = execute(doc)
@@ -261,18 +261,17 @@ print(f"Directory: {Path(__file__).parent}")
 
 def test_file_persists_across_blocks(tmp_path: Path) -> None:
     """Test that __file__ value persists across multiple code blocks."""
-    content = """
-# Block 1
+    content = """#' # Block 1
+
 file_from_block1 = __file__
 
----
+#' # Block 2
 
-# Block 2
 print(f"Block 1: {file_from_block1}")
 print(f"Block 2: {__file__}")
 print(f"Same: {file_from_block1 == __file__}")
 """
-    doc_path = tmp_path / "multi.md"
+    doc_path = tmp_path / "multi.py"
     doc = parse(content, str(doc_path))
     doc.source_path = doc_path
 

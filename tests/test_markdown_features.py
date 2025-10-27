@@ -7,12 +7,12 @@ from nhandu.renderer import render
 
 def test_table_rendering():
     """Test that markdown tables render as HTML tables."""
-    content = """# Document
-
-| Header 1 | Header 2 |
-|----------|----------|
-| Cell 1   | Cell 2   |
-| Cell 3   | Cell 4   |
+    content = """#' # Document
+#'
+#' | Header 1 | Header 2 |
+#' |----------|----------|
+#' | Cell 1   | Cell 2   |
+#' | Cell 3   | Cell 4   |
 """
 
     doc = parse(content)
@@ -30,11 +30,10 @@ def test_table_rendering():
 
 def test_table_with_formatting():
     """Test tables with inline formatting (bold, italic, etc)."""
-    content = """
-| Measure | Range | Status |
-|---------|-------|--------|
-| **MLE** | [0,1] | ✓ Yes  |
-| *PMI*   | (-∞,+∞) | ✗ No |
+    content = """#' | Measure | Range | Status |
+#' |---------|-------|--------|
+#' | **MLE** | [0,1] | ✓ Yes  |
+#' | *PMI*   | (-∞,+∞) | ✗ No |
 """
 
     doc = parse(content)
@@ -50,10 +49,9 @@ def test_table_with_formatting():
 
 def test_table_alignment():
     """Test table column alignment."""
-    content = """
-| Left | Center | Right |
-|:-----|:------:|------:|
-| L1   | C1     | R1    |
+    content = """#' | Left | Center | Right |
+#' |:-----|:------:|------:|
+#' | L1   | C1     | R1    |
 """
 
     doc = parse(content)
@@ -68,9 +66,9 @@ def test_table_alignment():
 
 def test_strikethrough():
     """Test strikethrough text rendering."""
-    content = """# Document
-
-This is ~~strikethrough~~ text.
+    content = """#' # Document
+#'
+#' This is ~~strikethrough~~ text.
 """
 
     doc = parse(content)
@@ -83,11 +81,11 @@ This is ~~strikethrough~~ text.
 
 def test_footnotes():
     """Test footnote rendering."""
-    content = """# Document
-
-Here is a footnote[^1].
-
-[^1]: This is the footnote text.
+    content = """#' # Document
+#'
+#' Here is a footnote[^1].
+#'
+#' [^1]: This is the footnote text.
 """
 
     doc = parse(content)
@@ -100,16 +98,16 @@ Here is a footnote[^1].
 
 def test_complex_table():
     """Test complex table from user's example."""
-    content = """### Measure Properties
-
-| Measure | Range | Asymmetric? | Interpretation |
-|---------|-------|-------------|----------------|
-| **MLE** | [0,1] | ✓ Yes | Direct conditional probability |
-| **PMI** | (-∞,+∞) | ✗ No | Information content (0 = independent) |
-| **Jaccard** | [0,1] | ✗ No | Context overlap similarity |
-
-**Note:** Even symmetric measures like PMI return two values in ASymCat for
-consistency, but both values are identical.
+    content = """#' ### Measure Properties
+#'
+#' | Measure | Range | Asymmetric? | Interpretation |
+#' |---------|-------|-------------|----------------|
+#' | **MLE** | [0,1] | ✓ Yes | Direct conditional probability |
+#' | **PMI** | (-∞,+∞) | ✗ No | Information content (0 = independent) |
+#' | **Jaccard** | [0,1] | ✗ No | Context overlap similarity |
+#'
+#' **Note:** Even symmetric measures like PMI return two values in ASymCat for
+#' consistency, but both values are identical.
 """
 
     doc = parse(content)
@@ -141,10 +139,9 @@ consistency, but both values are identical.
 
 def test_table_not_in_markdown_output():
     """Test that tables are preserved in markdown output."""
-    content = """
-| A | B |
-|---|---|
-| 1 | 2 |
+    content = """#' | A | B |
+#' |---|---|
+#' | 1 | 2 |
 """
 
     doc = parse(content)
@@ -159,11 +156,10 @@ def test_table_not_in_markdown_output():
 
 def test_empty_table_cells():
     """Test tables with empty cells."""
-    content = """
-| Col1 | Col2 |
-|------|------|
-| A    |      |
-|      | B    |
+    content = """#' | Col1 | Col2 |
+#' |------|------|
+#' | A    |      |
+#' |      | B    |
 """
 
     doc = parse(content)
@@ -177,11 +173,10 @@ def test_empty_table_cells():
 
 def test_table_with_code():
     """Test tables containing inline code."""
-    content = """
-| Function | Returns |
-|----------|---------|
-| `len()`  | int     |
-| `str()`  | string  |
+    content = """#' | Function | Returns |
+#' |----------|---------|
+#' | `len()`  | int     |
+#' | `str()`  | string  |
 """
 
     doc = parse(content)
@@ -195,17 +190,17 @@ def test_table_with_code():
 
 def test_multiple_tables():
     """Test document with multiple tables."""
-    content = """# Doc
-
-## Table 1
-| A | B |
-|---|---|
-| 1 | 2 |
-
-## Table 2
-| X | Y |
-|---|---|
-| 3 | 4 |
+    content = """#' # Doc
+#'
+#' ## Table 1
+#' | A | B |
+#' |---|---|
+#' | 1 | 2 |
+#'
+#' ## Table 2
+#' | X | Y |
+#' |---|---|
+#' | 3 | 4 |
 """
 
     doc = parse(content)

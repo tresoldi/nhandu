@@ -40,12 +40,12 @@ Some content."""
 
 def test_footer_suppressed_via_metadata():
     """Test that footer can be suppressed via YAML frontmatter."""
-    content = """---
-title: Test
-show_footer: false
----
-
-# Content"""
+    content = """#' ---
+#' title: Test
+#' show_footer: false
+#' ---
+#'
+#' # Content"""
 
     doc = parse(content)
     executed = execute(doc)
