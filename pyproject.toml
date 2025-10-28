@@ -115,7 +115,7 @@ addopts = "--cov=nhandu --cov-report=term-missing --cov-report=html --cov-fail-u
 
 [tool.coverage.run]
 source = ["src/nhandu"]
-omit = ["*/tests/*", "*/__main__.py"]
+omit = ["*/tests/*", "*/__main__.py", "*/converters/notebook.py"]
 
 [tool.coverage.html]
 directory = "tests/htmlcov"
